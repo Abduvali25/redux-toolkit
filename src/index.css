@@ -211,11 +211,21 @@ body {
   border-radius: 0.25rem;
   padding: 0.5rem;
   font-size: 1rem;
-  background-color: red;
+  background-color: #333;
   color: #fff;
   cursor: pointer;
 }
-
+.PostPage .buttons{
+  display: flex;
+  gap: .6rem;
+}
+.PostPage .danger{
+  background-color: red;
+}
+.PostPage input,
+.PostPage textarea {
+  margin-bottom: 0.5em;
+}
 .statusMsg {
   margin-top: 2rem;
 }
@@ -261,7 +271,16 @@ body {
     height: 300px;
   }
 }
-
+input[type="text"],
+textarea {
+  font-family: 'Open Sans', sans-serif;
+  width: 100%;
+  min-height: 48px;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  outline: none;
+}
 @media only screen and (min-width: 992px) {
 
   .Header svg {

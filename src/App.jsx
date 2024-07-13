@@ -10,8 +10,10 @@ import { Routes, useNavigate, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import store from "./store/store";
-import { deletePost, addPost } from "./store/postsSlice";
+import { deletePost, addPost, addPosts } from "./store/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
+
+import { api } from "./store/api";
 
 function App() {
 const posts = useSelector((state) => state.postsReducer.posts);
@@ -24,34 +26,46 @@ const dispatch = useDispatch()
   const navigate = useNavigate();
 
   useEffect(() => {
-    const filteredResults = posts.filter(
-      (post) =>
-        post.body.toLowerCase().includes(search.toLowerCase()) ||
-        post.title.toLowerCase().includes(search.toLowerCase())
-    );
+    async function fetchPosts(){
+    try {
+      const response =await api.get("/posts")
+      dispatch(addPosts(response.data))
+    } catch (error) {
+      
+    }
+  }
+  fetchPosts()
+  }, [])
 
-    setSearchResults(filteredResults.reverse());
-  }, [posts, search]);
+  
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), "MMMM dd, yyyy pp");
     const newPost = { id, title: postTitle, datetime, body: postBody };
 
+    try {
+     await api.post("/posts", newPost);
+      dispatch(addPost(newPost))
+    } catch (error) {
+      
+    }
+
     dispatch(addPost(newPost));
-    // const allPosts = [...posts, newPost];
-    // setPosts(allPosts);
     setPostTitle("");
     setPostBody("");
     navigate("/");
   };
 
-  const handleDelete = (id) => {
-    // const postsList = posts.filter((post) => post.id !== id);
-    // setPosts(postsList);
+  const handleDelete = async(id) => {
+   try {
+    const response = await api.delete(`/posts${id}`);
     dispatch(deletePost(id))
     navigate("/");
+   } catch (error) {
+    
+   }
   };
 
   return (
